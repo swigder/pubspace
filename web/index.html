@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet'/>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+          href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
+          type="text/css">
+
+    <link rel="stylesheet" href="styles.css"/>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K0V9G9G1VX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'analytics_storage': 'denied'
+        });
+        gtag('js', new Date());
+        gtag('config', 'G-K0V9G9G1VX');
+    </script>
+
+    <title>Pub Space NYC</title>
+</head>
+
+<body>
+
+<section class="section">
+    <div class="container">
+        <nav class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h1 class="title">
+                        <span>Pub Spaces NYC</span>
+                    </h1>
+                </div>
+            </div>
+        </nav>
+    </div>
+</section>
+
+<div id="main">
+    <div class="columns card">
+        <div id="map-container" class="column is-three-quarters">
+            <div id="map"></div>
+            <div class='map-overlay mapboxgl-ctrl-bottom-right' id='legend'>
+                <div>
+                    <span class="legend-key" style="background-color: #e55e5e"></span>
+                    <span>Indoor plaza</span>
+                </div>
+                <div>
+                    <span class="legend-key" style="background-color: #fbb03b"></span>
+                    <span>Outdoor plaza</span>
+                </div>
+                <div>
+                    <span class="legend-key" style="background-color: #223b53"></span>
+                    <span>Walkway</span>
+                </div>
+                <div>
+                    <span class="legend-key" style="background-color: #3bb2d0"></span>
+                    <span>Other</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div id="tabs-with-content">
+                <div class="tabs">
+                    <ul>
+                        <li id="map-tab"><a>Map</a></li>
+                        <li id="details-tab"><a>Details</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <section class="tab-content">
+                        <div class="buttons has-addons">
+                        </div>
+                    </section>
+
+                    <section class="tab-content">
+                        <div x-data="{detail: null}" x-on:details-data.window="detail = $event.detail">
+                            <template x-if="detail">
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <th class="has-text-right">Address</th>
+                                        <td><span x-text="detail.address_number"></span> <span x-text="detail.street_name"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="has-text-right">Year</th>
+                                        <td x-text="detail.year_completed"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="has-text-right">Type</th>
+                                        <td x-text="detail.public_space_type"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="has-text-right">Amenities</th>
+                                        <td x-text="detail.amenities_required"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                            <template x-if="!detail">
+                                <p class="content">Click on a location to see details.</p>
+                            </template>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content is-small">
+        <p> Data: <span></span>
+        </p>
+    </div>
+</div>
+
+<script src="util.js"></script>
+<script src="script.js"></script>
+<script src="tabs.js"></script>
+
+</body>
+</html>
