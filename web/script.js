@@ -1,5 +1,16 @@
-const urlParams = new URLSearchParams(window.location.search);
-let dataset = urlParams.get('dataset')
+let metadata = {}
+
+function loadMetadata() {
+    $.ajax({
+        url: `data/pops.json`,
+        async: false,
+        dataType: "json",
+        success: data => {
+            metadata = data;
+        }
+    })
+}
+loadMetadata()
 
 // TODO: Check that retina display tiles do not cause problems on non-retina devices (`@2x` below).
 mapboxgl.accessToken = 'pk.eyJ1Ijoic3dpZ2RlciIsImEiOiJja29hbnI2bmQwMm0zMm91aHhlNHlhOHF2In0.FaLm4CYTTue7x4-NWm8p5g';
@@ -39,7 +50,8 @@ let clickedLocation = null
 
 function onMarkerClick(e) {
     clickedLocation = e.lngLat
-    let properties = new Map(Object.entries(e.features[0].properties))
+    let id = e.features[0].properties.id
+    let properties = new Map(Object.entries(metadata[id]))
     dispatchDetails(properties)
 }
 
@@ -77,8 +89,6 @@ function dispatchDetails(properties) {
     }));
     $("#details-tab").click()
 }
-
-let loadedFiles = new Set()
 
 function getNewData() {
     map.addSource('data/pops.geojson', {

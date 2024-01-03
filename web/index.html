@@ -103,19 +103,23 @@
                                     <tbody>
                                     <tr>
                                         <th class="has-text-right">Address</th>
-                                        <td><span x-text="detail.address_number"></span> <span x-text="detail.street_name"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="has-text-right">Year</th>
-                                        <td x-text="detail.year_completed"></td>
+                                        <td x-text="detail.address"></td>
                                     </tr>
                                     <tr>
                                         <th class="has-text-right">Type</th>
-                                        <td x-text="detail.public_space_type"></td>
+                                        <td>
+                                            <template x-if="detail.public_space_type" x-for="type in detail.public_space_type" :key="type">
+                                                <dl><span x-text="type"></span></dl>
+                                            </template>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th class="has-text-right">Amenities</th>
-                                        <td x-text="detail.amenities_required"></td>
+                                        <td>
+                                            <template x-if="detail.amenities" x-for="amenity in detail.amenities" :key="amenity">
+                                                <dl><span x-text="amenity"></span></dl>
+                                            </template>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
