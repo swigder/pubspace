@@ -29,6 +29,8 @@ def to_geojson(df):
     geojson_items = []
     detail_items = {}
 
+    filters = {v.lower().replace(' ', '_'): v for v in ['Climate Control', 'Seating', 'Restrooms', 'Tables']}
+
     def to_list(data_string):
         return [i.strip() for i in data_string.split(';') if i]
 
@@ -40,6 +42,9 @@ def to_geojson(df):
         properties = {
             'id': row_id,
         }
+        for k, v in filters.items():
+            if v in amenities:
+                properties[k] = True
         details = {
             'name': row['building_name'],
             'address': row['address_number'] + ' ' + row['street_name'].title(),
@@ -55,7 +60,6 @@ def to_geojson(df):
         json.dump(geojson.FeatureCollection(features=geojson_items), outfile)
     with open('web/data/pops.json', 'w') as outfile:
         json.dump(detail_items, outfile)
-
 
 def main():
     data = get_data(force_cache_update=True)

@@ -120,3 +120,20 @@ function getNewData() {
     map.on('mousemove', 'pops', onMarkerHover);
     map.on('mouseleave', 'pops', onMarkerUnhover);
 }
+
+const filters = {
+    'amenity': new Set()
+}
+
+$(".filter-button").on('click', (event) => {
+    let button = $(event.currentTarget)
+    button.toggleClass('is-selected');
+    let filter = button.attr("data-filter-type")
+    let value = button.attr("data-filter-value")
+    if (button.hasClass('is-selected')) {
+        filters[filter].add(value);
+    } else {
+        filters[filter].delete(value);
+    }
+    map.setFilter('pops', ['all'].concat([...filters[filter]].map(f => ['has', f])));
+});
