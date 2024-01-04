@@ -3,6 +3,8 @@ import json
 import pandas
 import requests
 
+from collections import defaultdict
+
 DATASET_URL = 'https://data.cityofnewyork.us/resource/rvih-nhyn.csv'
 
 
@@ -31,6 +33,12 @@ def to_geojson(df):
 
     filters = {v.lower().replace(' ', '_'): v for v in ['Climate Control', 'Seating', 'Restrooms', 'Tables']}
 
+    emoji = defaultdict(lambda: '', {
+        'Climate Control': '🌡️',
+        'Seating': '🪑',
+        'Restrooms': '🚻',
+    })
+
     def to_list(data_string):
         return [i.strip() for i in data_string.split(';') if i]
 
@@ -48,7 +56,7 @@ def to_geojson(df):
         details = {
             'name': row['building_name'],
             'address': row['address_number'] + ' ' + row['street_name'].title(),
-            'amenities': amenities,
+            'amenities': [emoji[a] + a for a in amenities],
             'public_space_type': public_space_type,
         }
         geojson_items.append(
