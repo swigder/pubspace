@@ -1,6 +1,6 @@
 let metadata = {}
 
-window.onload = function(e){
+window.onload = function (e) {
     $.ajax({
         url: `data/metadata.json`,
         async: false,
@@ -8,7 +8,7 @@ window.onload = function(e){
         success: data => {
             metadata = data;
             window.dispatchEvent(new CustomEvent("filters-data", {
-              detail: metadata.filters,
+                detail: metadata.filters,
             }));
         }
     })
@@ -26,6 +26,7 @@ function loadDetails() {
         }
     })
 }
+
 loadDetails()
 
 // TODO: Check that retina display tiles do not cause problems on non-retina devices (`@2x` below).
@@ -54,6 +55,15 @@ map.addControl(
 map.addControl(
     new mapboxgl.ScaleControl({
         unit: 'imperial',
+    })
+);
+map.addControl(
+    new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: false,
+        showUserHeading: false
     })
 );
 map.dragRotate.disable();
@@ -141,7 +151,7 @@ const filters = {
     'amenity': new Set()
 }
 
-$(document).on("click", ".filter-button", function() {
+$(document).on("click", ".filter-button", function () {
     let button = $(this)
     button.toggleClass('is-selected');
     let filter = button.attr("data-filter-type")
