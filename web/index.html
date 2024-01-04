@@ -73,26 +73,21 @@
                     </ul>
                 </div>
                 <div>
-                    <section class="tab-content">
-                        <h1 class="subtitle is-6">Show only spaces with</h1>
-                        <div class="buttons has-addons">
-                            <button data-filter-type="amenity" data-filter-value="climate_control"
-                                    class="button is-light filter-button">
-                                <span class="check">✔️️</span>🌡️Climate Control
-                            </button>
-                            <button data-filter-type="amenity" data-filter-value="seating"
-                                    class="button is-light filter-button">
-                                <span class="check">✔️️</span>🪑Seating
-                            </button>
-                            <button data-filter-type="amenity" data-filter-value="tables"
-                                    class="button is-light filter-button">
-                                <span class="check">✔️️</span>Tables
-                            </button>
-                            <button data-filter-type="amenity" data-filter-value="restrooms"
-                                    class="button is-light filter-button">
-                                <span class="check">✔️</span>🚻Restrooms
-                            </button>
-                        </div>
+                    <section class="tab-content" x-data="{filters: []}"
+                             x-on:filters-data.window="filters = $event.detail">
+                        <template x-for="filter in filters">
+                            <div>
+                                <h6 class="subtitle is-6" x-text="filter.description"></h6>
+                                <div class="buttons has-addons">
+                                    <template x-for="option in filter.options">
+                                        <button x-bind:data-filter-type="filter.filter_id" x-bind:data-filter-value="option.option_id"
+                                                class="button is-light filter-button">
+                                            <span class="check">✔️️</span><span x-text="option.display_name"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
                     </section>
 
                     <section class="tab-content">
@@ -107,7 +102,8 @@
                                     <tr>
                                         <th class="has-text-right">Type</th>
                                         <td>
-                                            <template x-if="detail.public_space_type" x-for="type in detail.public_space_type" :key="type">
+                                            <template x-if="detail.public_space_type"
+                                                      x-for="type in detail.public_space_type" :key="type">
                                                 <dl><span x-text="type"></span></dl>
                                             </template>
                                         </td>
@@ -115,7 +111,8 @@
                                     <tr>
                                         <th class="has-text-right">Amenities</th>
                                         <td>
-                                            <template x-if="detail.amenities" x-for="amenity in detail.amenities" :key="amenity">
+                                            <template x-if="detail.amenities" x-for="amenity in detail.amenities"
+                                                      :key="amenity">
                                                 <dl><span x-text="amenity"></span></dl>
                                             </template>
                                         </td>
@@ -134,7 +131,8 @@
     </div>
 
     <div class="content is-small">
-        <p>Source: <span><a href="https://data.cityofnewyork.us/City-Government/Privately-Owned-Public-Spaces-POPS-/rvih-nhyn">NYC Open Data - Privately Owned Public Spaces (POPS)</a></span>
+        <p>Source: <span><a
+                href="https://data.cityofnewyork.us/City-Government/Privately-Owned-Public-Spaces-POPS-/rvih-nhyn">NYC Open Data - Privately Owned Public Spaces (POPS)</a></span>
         </p>
     </div>
 </div>

@@ -3,7 +3,10 @@ import json
 import pandas
 import requests
 
-from collections import defaultdict
+from collections import defaultdict, namedtuple
+
+Filter = namedtuple('Filter', ['description', 'filter_id', 'options'])
+FilterOption = namedtuple('FilterOption', ['option_id', 'display_name'])
 
 DATASET_URL = 'https://data.cityofnewyork.us/resource/rvih-nhyn.csv'
 
@@ -65,20 +68,29 @@ def get_categories_and_protections(public_space_types):
     return categories, protections
 
 
+EMOJIS = defaultdict(lambda: '', {
+    'Climate Control': '🌡️',
+    'Seating': '🪑',
+    'Restrooms': '🚻',
+})
+
+AMENITY_FILTERS = ['Climate Control', 'Seating', 'Tables', 'Restrooms']
+
+
+def filter_key(name):
+    return name.lower().replace(' ', '_')
+
+
+def display_name(name):
+    return EMOJIS[name] + name
+
+
 def to_geojson(df):
     for column in ['building_name', 'amenities_required', 'public_space_type']:
         df[column].fillna('', inplace=True)
 
     geojson_items = []
     detail_items = {}
-
-    filters = {v.lower().replace(' ', '_'): v for v in ['Climate Control', 'Seating', 'Restrooms', 'Tables']}
-
-    emoji = defaultdict(lambda: '', {
-        'Climate Control': '🌡️',
-        'Seating': '🪑',
-        'Restrooms': '🚻',
-    })
 
     def to_list(data_string):
         return [i.strip() for i in data_string.split(';') if i]
@@ -92,13 +104,13 @@ def to_geojson(df):
         properties = {
             'id': row_id,
         }
-        for k, v in filters.items():
-            if v in amenities:
-                properties[k] = True
+        for f in AMENITY_FILTERS:
+            if f in amenities:
+                properties[filter_key(f)] = True
         details = {
             'name': row['building_name'],
             'address': row['address_number'] + ' ' + row['street_name'].title(),
-            'amenities': [emoji[a] + a for a in amenities],
+            'amenities': [display_name(a) for a in amenities],
             'public_space_type': public_space_type,
             'categories': categories,
             'protections': protections,
@@ -114,9 +126,26 @@ def to_geojson(df):
         json.dump(detail_items, outfile)
 
 
+def write_metadata():
+    metadata = {
+        'filters': [
+            Filter(description='Show only spaces with',
+                   filter_id='amenity',
+                   options=[
+                       FilterOption(
+                           option_id=filter_key(a),
+                           display_name=display_name(a))._asdict()
+                       for a in AMENITY_FILTERS])._asdict()
+        ]
+    }
+    with open('web/data/metadata.json', 'w') as outfile:
+        json.dump(metadata, outfile)
+
+
 def main():
     data = get_data(force_cache_update=True)
     to_geojson(data)
+    write_metadata()
 
 
 if __name__ == "__main__":

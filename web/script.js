@@ -1,16 +1,32 @@
 let metadata = {}
 
-function loadMetadata() {
+window.onload = function(e){
     $.ajax({
-        url: `data/pops.json`,
+        url: `data/metadata.json`,
         async: false,
-        dataType: "json",
+        dataType: 'json',
         success: data => {
             metadata = data;
+            window.dispatchEvent(new CustomEvent("filters-data", {
+              detail: metadata.filters,
+            }));
         }
     })
 }
-loadMetadata()
+
+let details = {}
+
+function loadDetails() {
+    $.ajax({
+        url: `data/pops.json`,
+        async: false,
+        dataType: 'json',
+        success: data => {
+            details = data;
+        }
+    })
+}
+loadDetails()
 
 // TODO: Check that retina display tiles do not cause problems on non-retina devices (`@2x` below).
 mapboxgl.accessToken = 'pk.eyJ1Ijoic3dpZ2RlciIsImEiOiJja29hbnI2bmQwMm0zMm91aHhlNHlhOHF2In0.FaLm4CYTTue7x4-NWm8p5g';
@@ -51,7 +67,7 @@ let clickedLocation = null
 function onMarkerClick(e) {
     clickedLocation = e.lngLat
     let id = e.features[0].properties.id
-    let properties = new Map(Object.entries(metadata[id]))
+    let properties = new Map(Object.entries(details[id]))
     dispatchDetails(properties)
 }
 
@@ -125,8 +141,8 @@ const filters = {
     'amenity': new Set()
 }
 
-$(".filter-button").on('click', (event) => {
-    let button = $(event.currentTarget)
+$(document).on("click", ".filter-button", function() {
+    let button = $(this)
     button.toggleClass('is-selected');
     let filter = button.attr("data-filter-type")
     let value = button.attr("data-filter-value")
