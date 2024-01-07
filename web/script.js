@@ -78,9 +78,14 @@ let clickedLocation = null
 
 function onMarkerClick(e) {
     clickedLocation = e.lngLat
-    let id = e.features[0].properties.id
-    let properties = new Map(Object.entries(details[id]))
-    dispatchDetails(properties)
+    let space_id = e.features[0].properties.id
+    let properties = new Map(Object.entries(details[space_id]))
+    properties.set('space_id', space_id)
+    properties.set('url',  'https://apops.mas.org/pops/' + space_id)
+    window.dispatchEvent(new CustomEvent("details-data", {
+        detail: Object.fromEntries(properties),
+    }));
+    $("#details-tab").click()
 }
 
 let currentHover = null
@@ -109,13 +114,6 @@ function onMarkerUnhover(e) {
         map.setFeatureState(currentHover, {hover: false});
     }
     currentHover = null;
-}
-
-function dispatchDetails(properties) {
-    window.dispatchEvent(new CustomEvent("details-data", {
-        detail: Object.fromEntries(properties),
-    }));
-    $("#details-tab").click()
 }
 
 function getNewData() {
