@@ -1,4 +1,5 @@
 let metadata = {}
+let filters = {}
 
 window.onload = function (e) {
     $.ajax({
@@ -10,6 +11,7 @@ window.onload = function (e) {
             window.dispatchEvent(new CustomEvent("filters-data", {
                 detail: metadata.filters,
             }));
+            filters = new Map(metadata.filters.map(f => [f.filter_id, new Set()]));
         }
     })
 }
@@ -147,19 +149,22 @@ function getNewData() {
     map.on('mouseleave', 'pops', onMarkerUnhover);
 }
 
-const filters = {
-    'amenity': new Set()
-}
-
 $(document).on("click", ".filter-button", function () {
+    if (filters.size === 0) {
+        return;
+    }
     let button = $(this)
     button.toggleClass('is-selected');
     let filter = button.attr("data-filter-type")
     let value = button.attr("data-filter-value")
     if (button.hasClass('is-selected')) {
-        filters[filter].add(value);
+        filters.get(filter).add(value);
     } else {
-        filters[filter].delete(value);
+        filters.get(filter).delete(value);
     }
-    map.setFilter('pops', ['all'].concat([...filters[filter]].map(f => ['in', f, ['string', ['get', 'amenities']]])));
+    let filter_expressions =
+        metadata.filters
+            .filter(f => filters.get(f.filter_id).size > 0)
+            .map(f => [f.any_all].concat([...filters.get(f.filter_id)].map(v => ['in', v, ['string', ['get', f.filter_id]]])))
+    map.setFilter('pops', ['all'].concat(filter_expressions));
 });

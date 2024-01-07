@@ -58,3 +58,7 @@ html, body {
     border-bottom-width: 1px;
     background-color: hsla(0, 0%, 100%, .5);
 }
+
+.filter {
+    padding-top: 30px
+}

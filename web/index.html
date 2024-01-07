@@ -77,7 +77,7 @@
                              x-on:filters-data.window="filters = $event.detail">
                         <template x-for="filter in filters">
                             <div>
-                                <h6 class="subtitle is-6" x-text="filter.description"></h6>
+                                <h6 class="title is-6 filter" x-text="filter.description"></h6>
                                 <div class="buttons has-addons">
                                     <template x-for="option in filter.options">
                                         <button x-bind:data-filter-type="filter.filter_id" x-bind:data-filter-value="option.option_id"
