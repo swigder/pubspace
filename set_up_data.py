@@ -17,7 +17,7 @@ CATEGORIES = {
         'Covered Pedestrian Space',
         'Glass-Enclosed Urban Plaza Equivalent',
     ],
-    'Other Outdoor': [
+    'Other Outdoors': [
         'Courtyard',
         'Landscaped Terrace',
         'Landscaped Terraces',
@@ -34,7 +34,7 @@ CATEGORIES = {
 TYPE_TO_CATEGORY = {i: k for k, v in CATEGORIES.items() for i in v}
 
 PROTECTION = {
-    'Outdoor': ['Outdoor', 'Park', 'Plaza', 'Other Outdoor'],
+    'Outdoors': ['Park', 'Plaza', 'Other Outdoors'],
     'Enclosed': ['Enclosed', 'Lobby', 'Other Enclosed'],
     'Covered': ['Arcade', 'Covered'],
     'Other / Unknown': ['Other / Unknown', 'Passageway'],
@@ -74,11 +74,14 @@ def get_categories_and_protections(public_space_type):
 
 
 EMOJIS = defaultdict(lambda: '', {
+    'Accessible': '♿️',
     'Climate Control': '🌡️',
+    'Covered': '☂️',
+    'Enclosed': '🏢',
+    'Full/Partial': '♿️',
+    'Outdoors': '☀️',
     'Seating': '🪑',
     'Restrooms': '🚻',
-    'Accessible': '♿️',
-    'Full/Partial': '♿️',
 })
 
 AMENITY_FILTERS = ['Climate Control', 'Seating', 'Tables', 'Restrooms', 'Accessible']
