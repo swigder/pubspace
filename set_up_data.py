@@ -77,9 +77,11 @@ EMOJIS = defaultdict(lambda: '', {
     'Climate Control': '🌡️',
     'Seating': '🪑',
     'Restrooms': '🚻',
+    'Accessible': '♿️',
+    'Full/Partial': '♿️',
 })
 
-AMENITY_FILTERS = ['Climate Control', 'Seating', 'Tables', 'Restrooms']
+AMENITY_FILTERS = ['Climate Control', 'Seating', 'Tables', 'Restrooms', 'Accessible']
 
 SPACE_TYPE_FILTERS = CATEGORIES.keys()
 
@@ -96,7 +98,7 @@ def display_name(name):
 
 
 def to_geojson(df):
-    for column in ['building_name', 'amenities_required', 'public_space_type']:
+    for column in ['building_name', 'amenities_required', 'public_space_type', 'physically_disabled']:
         df[column].fillna('', inplace=True)
 
     geojson_items = []
@@ -108,6 +110,8 @@ def to_geojson(df):
     for index, row in df.iterrows():
         row_id = row['pops_number']
         amenities = to_list(row['amenities_required'])
+        accessible = row['physically_disabled'] == 'Full/Partial'
+        amenities_for_filter = amenities + (['Accessible'] if accessible else [])
         public_space_type = to_list(row['public_space_type'])
         categories, protections = get_categories_and_protections(public_space_type)
 
@@ -116,14 +120,15 @@ def to_geojson(df):
 
         properties = {
             'id': row_id,
-            'amenities': filter_values(AMENITY_FILTERS, amenities),
-            'protections': filter_values(PROTECTION_FILTERS, protections)
+            'amenities': filter_values(AMENITY_FILTERS, amenities_for_filter),
+            'protections': filter_values(PROTECTION_FILTERS, protections),
         }
         details = {
             'name': row['building_name'],
             'address': row['address_number'] + ' ' + row['street_name'].title(),
             'amenities': [display_name(a) for a in amenities],
             'public_space_type': public_space_type,
+            'accessibility': display_name(row['physically_disabled']),
         }
         geojson_items.append(
             geojson.Feature(geometry=geojson.Point((row['longitude'], row['latitude'])),

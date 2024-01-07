@@ -99,7 +99,8 @@
                                     <tr>
                                         <th class="has-text-right">Location</th>
                                         <td>
-                                            <template x-if="detail.name"><span><span x-text="detail.name"></span><br></span>
+                                            <template x-if="detail.name"><span><span
+                                                    x-text="detail.name"></span><br></span>
                                             </template>
                                             <span x-text="detail.address"></span>
                                         </td>
@@ -121,6 +122,10 @@
                                                 <dl><span x-text="amenity"></span></dl>
                                             </template>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="has-text-right">Accessibility</th>
+                                        <td x-text="detail.accessibility"></td>
                                     </tr>
                                     </tbody>
                                 </table>
