@@ -101,12 +101,11 @@ def to_geojson(df):
         public_space_type = to_list(row['public_space_type'])
         categories, protections = get_categories_and_protections(public_space_type)
 
+        filter_values = [filter_key(f) for f in AMENITY_FILTERS if f in amenities]
         properties = {
             'id': row_id,
+            'amenities': ';'.join(filter_values)
         }
-        for f in AMENITY_FILTERS:
-            if f in amenities:
-                properties[filter_key(f)] = True
         details = {
             'name': row['building_name'],
             'address': row['address_number'] + ' ' + row['street_name'].title(),

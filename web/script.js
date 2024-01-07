@@ -161,5 +161,5 @@ $(document).on("click", ".filter-button", function () {
     } else {
         filters[filter].delete(value);
     }
-    map.setFilter('pops', ['all'].concat([...filters[filter]].map(f => ['has', f])));
+    map.setFilter('pops', ['all'].concat([...filters[filter]].map(f => ['in', f, ['string', ['get', 'amenities']]])));
 });
